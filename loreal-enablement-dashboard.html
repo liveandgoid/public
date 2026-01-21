@@ -31,6 +31,9 @@
             --spacing-md: 16px;
             --spacing-lg: 24px;
             --spacing-xl: 32px;
+            
+            --sidebar-width: 240px;
+            --header-height: 70px;
         }
 
         * {
@@ -51,27 +54,29 @@
         }
 
         /* ------------------------------------------------------------------
-           LAYOUT
+           LAYOUT & SIDEBAR
            ------------------------------------------------------------------ */
         #app-container {
             display: flex;
             width: 100%;
             height: 100%;
+            position: relative;
         }
 
         /* SIDEBAR */
         aside {
-            width: 240px;
+            width: var(--sidebar-width);
             background-color: var(--color-bg-panel);
             border-right: 1px solid var(--color-border);
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            z-index: 10;
+            z-index: 100;
+            transition: transform 0.3s ease;
         }
 
         .brand-logo {
-            height: 70px;
+            height: var(--header-height);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -86,6 +91,7 @@
         nav {
             flex: 1;
             padding: var(--spacing-md) 0;
+            overflow-y: auto;
         }
 
         .nav-item {
@@ -112,6 +118,15 @@
 
         .nav-item i { width: 24px; margin-right: 10px; }
 
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 90;
+            display: none;
+        }
+
         /* MAIN CONTENT */
         main {
             flex: 1;
@@ -119,11 +134,12 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            width: 100%; /* Ensure full width */
         }
 
         /* HEADER */
         header {
-            height: 70px;
+            height: var(--header-height);
             background-color: var(--color-bg-panel);
             border-bottom: 1px solid var(--color-border);
             display: flex;
@@ -131,6 +147,21 @@
             justify-content: space-between;
             padding: 0 var(--spacing-lg);
             flex-shrink: 0;
+        }
+
+        .header-left-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--color-gold);
+            font-size: 20px;
+            cursor: pointer;
+            display: none; /* Hidden on desktop by default unless needed */
         }
 
         .header-left h1 {
@@ -146,6 +177,16 @@
             letter-spacing: 2px;
             margin-top: 2px;
         }
+
+        /* Mobile Title (Hidden by default) */
+        .mobile-title {
+            display: none;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        .mobile-title span { color: var(--color-gold); }
 
         .header-controls {
             display: flex;
@@ -227,7 +268,7 @@
             font-weight: 700;
             text-transform: uppercase;
             font-size: 12px;
-            margin-bottom: var(--spacing-md); /* Increased bottom margin for grid */
+            margin-bottom: var(--spacing-md);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -252,7 +293,7 @@
         /* REDESIGNED KPI SCORECARDS */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* Default 5 cols */
+            grid-template-columns: repeat(5, 1fr);
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
         }
@@ -260,17 +301,17 @@
         .card {
             background: linear-gradient(145deg, var(--color-bg-panel) 0%, #151515 100%);
             border: 1px solid var(--color-border);
-            border-radius: 8px; /* Slightly more rounded */
-            padding: 20px; /* Increased padding */
+            border-radius: 8px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            min-height: 150px; /* Taller card */
+            min-height: 150px;
             transition: transform 0.2s, border-color 0.2s;
         }
 
-        /* Compact Card for AI Insight Section */
+        /* Compact Card */
         .card-compact {
             background: rgba(20, 20, 20, 0.8);
             border: 1px solid #333;
@@ -296,10 +337,10 @@
             border-color: #444;
         }
 
-        /* New KPI Title Style */
+        /* Typography */
         .kpi-title {
             color: var(--color-text-secondary);
-            font-size: 13px; /* Increased from 11px */
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -307,10 +348,9 @@
             opacity: 0.9;
         }
 
-        /* New KPI Value Style - LARGE & BOLD */
         .kpi-value {
             color: var(--color-text-primary);
-            font-size: 32px; /* Huge increase from 20px */
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 15px;
             letter-spacing: -0.5px;
@@ -328,9 +368,8 @@
             margin-top: auto;
         }
 
-        /* Styled Growth Badge */
         .kpi-growth {
-            font-size: 14px; /* Larger font */
+            font-size: 14px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
@@ -349,12 +388,12 @@
         }
 
         .sparkline-canvas {
-            width: 80px;  /* Wider sparkline */
-            height: 35px; /* Taller sparkline */
+            width: 80px;
+            height: 35px;
             opacity: 0.8;
         }
 
-        /* CHARTS & TRENDS - UPDATED SCROLL LOGIC */
+        /* CHARTS */
         .chart-section {
             background-color: var(--color-bg-panel);
             border: 1px solid var(--color-border);
@@ -381,6 +420,7 @@
         .chart-controls, .period-toggles {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
 
         .toggle-btn {
@@ -398,20 +438,19 @@
             border-bottom: 2px solid var(--color-gold);
         }
 
-        /* UPDATED: SCROLLABLE CHART CONTAINER */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
-            overflow-x: auto; /* Enable horizontal scroll */
+            overflow-x: auto;
             overflow-y: hidden;
-            padding-bottom: 10px; /* Space for scrollbar */
+            padding-bottom: 10px;
         }
         
         .chart-canvas-wrapper {
             height: 100%;
             width: 100%;
-            min-width: 0; /* Default, will be updated by JS */
+            min-width: 0; 
             position: relative;
         }
 
@@ -422,7 +461,7 @@
             border-radius: 6px;
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
-            overflow: hidden;
+            overflow-x: auto; /* Allow table scrolling */
             display: flex;
             flex-direction: column;
         }
@@ -431,6 +470,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
+            min-width: 600px; /* Force scroll on small screens */
         }
 
         th {
@@ -451,7 +491,6 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background-color: rgba(255,255,255,0.02); }
         
-        /* Interactive rows */
         .clickable-row {
             cursor: pointer;
             transition: background 0.2s;
@@ -479,7 +518,7 @@
         .rank-2 { background-color: #A9A9A9; color: #000; }
         .rank-3 { background-color: #CD7F32; color: #000; }
 
-        /* GRID LAYOUTS FOR BOTTOM SECTIONS */
+        /* GRIDS */
         .split-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -494,7 +533,6 @@
             margin-bottom: var(--spacing-lg);
         }
 
-        /* DIVISION CARDS (Page 5) */
         .division-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -520,7 +558,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 2000;
         }
         .modal {
             background-color: var(--color-bg-panel);
@@ -529,6 +567,7 @@
             border-radius: 6px;
             padding: var(--spacing-lg);
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            max-width: 90%;
         }
         .modal-header { display: flex; justify-content: space-between; margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--color-border); padding-bottom: 10px; }
         .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -537,27 +576,65 @@
         .form-group input { width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; border-radius: 4px; }
         .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
 
-        /* RESPONSIVE */
+        /* RESPONSIVE DESIGN */
         @media (max-width: 1400px) {
-             /* Adjust title size slightly on smaller executive screens */
             .kpi-value { font-size: 28px; }
         }
-        @media (max-width: 1024px) {
-            .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
             .split-grid { grid-template-columns: 1fr; }
             .division-grid { grid-template-columns: repeat(2, 1fr); }
         }
+        
+        /* Mobile Layout */
         @media (max-width: 768px) {
-            #app-container { flex-direction: column; }
-            aside { width: 100%; height: 60px; flex-direction: row; align-items: center; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--color-border); }
-            .nav-item { padding: 0 16px; white-space: nowrap; }
-            .brand-logo { width: 100px; border-bottom: none; border-right: 1px solid var(--color-border); }
-            .kpi-grid { grid-template-columns: 1fr 1fr; }
-            header { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
+            /* Sidebar hidden by default on mobile */
+            aside { 
+                position: fixed; 
+                height: 100vh;
+                left: 0; top: 0;
+                transform: translateX(-100%);
+                box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            }
+            aside.sidebar-open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            /* Header Adjustments */
+            header { 
+                padding: 0 15px; 
+                justify-content: space-between;
+                gap: 10px;
+            }
             
-            /* Mobile adjustments for large cards */
-            .kpi-value { font-size: 24px; }
+            .menu-toggle-btn {
+                display: block;
+            }
+
+            .header-left { display: none; } /* Hide full title */
+            .mobile-title { display: block; } /* Show short title */
+
+            /* Controls stack on mobile */
+            .header-controls {
+                display: none; /* Hide complex filters on mobile header for space, or simplify */
+            }
+            
+            /* KPI Grids */
+            .kpi-grid { grid-template-columns: 1fr 1fr !important; }
+            
             .card { padding: 15px; min-height: 120px; }
+            .kpi-value { font-size: 20px; }
+            
+            /* Chart Controls */
+            .chart-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .chart-controls { overflow-x: auto; width: 100%; padding-bottom: 5px; }
+            
+            /* Modal */
+            .modal-grid { grid-template-columns: 1fr; }
         }
 
         /* Utility */
@@ -577,6 +654,9 @@
 <body>
 
 <div id="app-container">
+    <!-- MOBILE OVERLAY -->
+    <div class="sidebar-overlay" onclick="app.toggleSidebar()"></div>
+
     <!-- SIDE MENU -->
     <aside id="sidebar">
         <div class="brand-logo">
@@ -608,10 +688,19 @@
     <main>
         <!-- HEADER -->
         <header>
-            <div class="header-left">
-                <h1>Monetization Intelligence Platform</h1>
-                <h2>Indonesia Edition</h2>
+            <div class="header-left-container">
+                <button class="menu-toggle-btn" onclick="app.toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="header-left">
+                    <h1>Monetization Intelligence Platform</h1>
+                    <h2>Indonesia Edition</h2>
+                </div>
+                <div class="mobile-title">
+                    <span>L’ORÉAL</span> MIP
+                </div>
             </div>
+            
             <div class="header-controls">
                 <select id="platformFilter">
                     <option value="all">All Platforms</option>
@@ -637,7 +726,6 @@
 
         <!-- CONTENT AREA -->
         <div id="content-area">
-            
             <!-- PAGE 1: DASHBOARD -->
             <div id="dashboard" class="page-section active">
                 <div class="ai-panel">
@@ -692,6 +780,7 @@
 
             <!-- PAGE 2: LIVESTREAM -->
             <div id="livestream" class="page-section">
+                <!-- Content same as before -->
                 <div class="ai-panel">
                     <div class="ai-title"><i class="fa-solid fa-robot"></i> AI Livestream Insight</div>
                     <div class="ai-content">
@@ -748,6 +837,7 @@
 
             <!-- PAGE 3: SHORT VIDEO -->
             <div id="shortvideo" class="page-section">
+                <!-- Content same as before -->
                 <div class="ai-panel">
                     <div class="ai-title"><i class="fa-solid fa-robot"></i> AI Short Video Insight</div>
                     <div class="ai-content">
@@ -794,16 +884,14 @@
 
             <!-- PAGE 4: AFFILIATES -->
             <div id="affiliates" class="page-section">
+                <!-- Content same as before -->
                 <div class="ai-panel">
                     <div class="ai-title"><i class="fa-solid fa-robot"></i> AI Affiliate Insight</div>
                     <div class="ai-content">
                         <ul><li>Top 10 Creators drive 60% of Affiliate GMV. Recommended: Exclusive bundle offers for Top Tier.</li></ul>
                     </div>
                 </div>
-                <!-- UPDATED: Affiliate KPIs with Sparkline and Growth -->
                 <div class="kpi-grid" id="affiliate-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
-                
-                <!-- NEW: Affiliate Trend Chart -->
                 <div class="chart-section">
                     <div class="chart-header">
                         <div class="chart-controls">
@@ -823,7 +911,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="table-section">
                     <div class="chart-title" style="margin-bottom:15px; display:flex; justify-content:space-between;">
                         <span>Top Creator Performance</span>
@@ -835,17 +922,14 @@
 
             <!-- PAGE 5: BRANDS -->
             <div id="brands" class="page-section">
+                <!-- Content same as before -->
                 <div class="ai-panel">
                     <div class="ai-title"><i class="fa-solid fa-robot"></i> AI Brand Insight</div>
                     <div class="ai-content">
                         <ul><li>LDB Division showing highest YoY Growth (+22%) due to CeraVe viral trends.</li></ul>
                     </div>
                 </div>
-                
-                <!-- NEW: Top Level Brand KPIs -->
                 <div class="kpi-grid" id="brand-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
-
-                <!-- NEW: Brand Trend Chart -->
                 <div class="chart-section">
                     <div class="chart-header">
                         <div class="chart-controls">
@@ -867,9 +951,7 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="division-grid" id="brand-division-cards"></div>
-
                 <div class="table-section">
                     <div class="chart-title" style="margin-bottom:15px;">Brand Performance Matrix</div>
                     <table id="table-brands-main"><thead><tr><th>Brand</th><th>Division</th><th>Sessions</th><th>Hours</th><th>GMV</th><th>GMV/Hr</th><th>Orders</th><th>Growth</th></tr></thead><tbody></tbody></table>
@@ -884,10 +966,7 @@
                         <ul><li>3 SKUs in Garnier range are at risk of stock-out within 48 hours based on current velocity.</li></ul>
                     </div>
                 </div>
-                
-                <!-- NEW: SKU KPIs -->
                 <div class="kpi-grid" id="sku-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
-
                 <div class="table-section">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                         <div class="chart-title">SKU Velocity & Stock</div>
@@ -907,6 +986,7 @@
 <!-- SKU EDIT MODAL -->
 <div class="modal-overlay" id="skuModal">
     <div class="modal">
+        <!-- Content same as before -->
         <div class="modal-header">
             <h3>Edit SKU Intelligence</h3>
             <button onclick="document.getElementById('skuModal').style.display='none'" style="background:none; border:none; color:#fff; cursor:pointer;">X</button>
@@ -1000,6 +1080,15 @@
             this.setupListeners();
         },
 
+        // NEW: Sidebar Toggle
+        toggleSidebar: function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('sidebar-open');
+            overlay.classList.toggle('active');
+        },
+
         router: function(pageId, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
@@ -1007,6 +1096,11 @@
             document.getElementById(pageId).classList.add('active');
             
             this.activePage = pageId;
+            
+            // Auto close sidebar on mobile when navigating
+            if (window.innerWidth <= 768) {
+                this.toggleSidebar();
+            }
 
             if(pageId === 'dashboard') {
                 this.renderDashboard();
@@ -1490,4 +1584,3 @@
 </script>
 </body>
 </html>
-
