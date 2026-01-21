@@ -72,7 +72,15 @@
             flex-direction: column;
             flex-shrink: 0;
             z-index: 100;
-            transition: transform 0.3s ease;
+            transition: width 0.3s ease, transform 0.3s ease;
+            white-space: nowrap; /* Prevent text wrap when collapsing */
+            overflow: hidden;
+        }
+
+        /* Desktop Collapse State */
+        aside.desktop-hidden {
+            width: 0;
+            border-right: none;
         }
 
         .brand-logo {
@@ -85,6 +93,7 @@
             font-weight: 700;
             letter-spacing: 2px;
             color: var(--color-text-primary);
+            min-width: var(--sidebar-width); /* Keep logo layout stable */
         }
         .brand-logo span { color: var(--color-gold); margin-right: 5px; }
 
@@ -92,6 +101,7 @@
             flex: 1;
             padding: var(--spacing-md) 0;
             overflow-y: auto;
+            min-width: var(--sidebar-width); /* Keep nav items layout stable */
         }
 
         .nav-item {
@@ -161,7 +171,7 @@
             color: var(--color-gold);
             font-size: 20px;
             cursor: pointer;
-            display: none; /* Hidden on desktop by default unless needed */
+            display: block; /* Visible on desktop now */
         }
 
         .header-left h1 {
@@ -202,10 +212,50 @@
             border-radius: 4px;
             font-family: inherit;
             font-size: 12px;
+            cursor: pointer; 
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1); 
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
         }
         
         select:focus, input:focus {
             border-color: var(--color-gold);
+        }
+
+        /* CHECKBOX GROUP STYLE */
+        .checkbox-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background-color: var(--color-bg-dark);
+            border: 1px solid var(--color-border);
+            padding: 6px 12px;
+            border-radius: 4px;
+            height: 30px; /* Match height of select inputs approximately */
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            accent-color: var(--color-gold);
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
         }
 
         .btn-gold {
@@ -539,16 +589,68 @@
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
         }
+        
+        /* Updated Division Card for Selection */
         .division-card {
             background: linear-gradient(135deg, var(--color-bg-panel) 0%, #1a1a1a 100%);
             border: 1px solid var(--color-border);
             border-top: 3px solid var(--color-gold);
             padding: var(--spacing-md);
             border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
         }
+
+        .division-card:hover {
+            transform: translateY(-2px);
+            border-color: #555;
+        }
+
+        .division-card.selected {
+            border: 1px solid var(--color-gold);
+            background: linear-gradient(135deg, rgba(198, 166, 100, 0.15) 0%, #1a1a1a 100%);
+            box-shadow: 0 0 15px rgba(198, 166, 100, 0.1);
+        }
+
+        /* Custom Checkbox for Division Card */
+        .card-checkbox {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #555;
+            border-radius: 3px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Clicking card triggers it */
+        }
+        
+        .division-card.selected .card-checkbox {
+            background: var(--color-gold);
+            border-color: var(--color-gold);
+        }
+        
+        .division-card.selected .card-checkbox::after {
+            content: '✔';
+            color: #000;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         .div-title { font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 10px;}
-        .div-stat { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+        .div-stat { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: #888; }
         .div-stat span:last-child { font-weight: 600; color: #fff; }
+        
+        /* Specific metric styles inside division card */
+        .div-metric-lg {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
 
         /* MODAL */
         .modal-overlay {
@@ -588,7 +690,6 @@
         
         /* Mobile Layout */
         @media (max-width: 768px) {
-            /* Sidebar hidden by default on mobile */
             aside { 
                 position: fixed; 
                 height: 100vh;
@@ -604,36 +705,34 @@
                 display: block;
             }
 
-            /* Header Adjustments */
             header { 
                 padding: 0 15px; 
                 justify-content: space-between;
                 gap: 10px;
+                flex-wrap: wrap; 
+                height: auto; 
+                min-height: 70px;
             }
             
-            .menu-toggle-btn {
-                display: block;
-            }
+            .header-left { display: none; } 
+            .mobile-title { display: block; } 
 
-            .header-left { display: none; } /* Hide full title */
-            .mobile-title { display: block; } /* Show short title */
-
-            /* Controls stack on mobile */
             .header-controls {
-                display: none; /* Hide complex filters on mobile header for space, or simplify */
+                display: flex; 
+                width: 100%;
+                flex-wrap: wrap;
+                padding-bottom: 10px;
+                justify-content: center;
             }
             
-            /* KPI Grids */
             .kpi-grid { grid-template-columns: 1fr 1fr !important; }
             
             .card { padding: 15px; min-height: 120px; }
             .kpi-value { font-size: 20px; }
             
-            /* Chart Controls */
             .chart-header { flex-direction: column; align-items: flex-start; gap: 10px; }
             .chart-controls { overflow-x: auto; width: 100%; padding-bottom: 5px; }
             
-            /* Modal */
             .modal-grid { grid-template-columns: 1fr; }
         }
 
@@ -672,7 +771,8 @@
             <div class="nav-item" onclick="app.router('shortvideo', this)">
                 <i class="fa-brands fa-tiktok"></i> Short Video
             </div>
-            <div class="nav-item" onclick="app.router('affiliates', this)">
+            <!-- MENU AFFILIATE HIDDEN -->
+            <div class="nav-item" onclick="app.router('affiliates', this)" style="display: none;">
                 <i class="fa-solid fa-users"></i> Affiliates
             </div>
             <div class="nav-item" onclick="app.router('brands', this)">
@@ -689,6 +789,7 @@
         <!-- HEADER -->
         <header>
             <div class="header-left-container">
+                <!-- Hamburger Button Visible on Desktop & Mobile -->
                 <button class="menu-toggle-btn" onclick="app.toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -702,12 +803,12 @@
             </div>
             
             <div class="header-controls">
-                <select id="platformFilter">
-                    <option value="all">All Platforms</option>
-                    <option value="tiktok">TikTok Shop</option>
-                    <option value="shopee">Shopee Live</option>
-                    <option value="tokopedia">Tokopedia</option>
-                </select>
+                <!-- PLATFORM CHECKBOX GROUP -->
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="tiktok" checked> TikTok</label>
+                    <label><input type="checkbox" value="shopee" checked> Shopee</label>
+                </div>
+
                 <select id="divisionFilter">
                     <option value="all">All Divisions</option>
                     <option value="CPD">Consumer (CPD)</option>
@@ -715,6 +816,12 @@
                     <option value="PPD">Professional (PPD)</option>
                     <option value="LDB">Dermatological (LDB)</option>
                 </select>
+                
+                <!-- NEW BRAND FILTER -->
+                <select id="brandFilter">
+                    <option value="all">All Brands</option>
+                </select>
+
                 <div style="display:flex; gap:4px; align-items:center;">
                     <input type="date" id="startDate" value="2024-01-01">
                     <span style="color:#666">-</span>
@@ -733,7 +840,7 @@
                     <div class="ai-content">
                         <ul>
                             <li>GMV per Hour increased by 12% driven by LLD flagship events on TikTok Shop.</li>
-                            <li>Affiliate contribution hit an all-time high of 28% total GMV this week.</li>
+                            <li>Short Video contribution is rising steadily (+5% WoW) due to new KOL partnerships.</li>
                             <li>Maybelline Super Stay launch campaign drove a 45% spike in orders on Tuesday.</li>
                             <li>Live session duration correlates positively with AOV; sessions >2 hours show 15% higher AOV.</li>
                         </ul>
@@ -761,7 +868,9 @@
                     </div>
                 </div>
                 <div style="margin-bottom:8px; font-size:11px; text-transform:uppercase; color:#666; font-weight:600;">Channel Contribution</div>
-                <div class="split-grid" id="channel-kpi-row"></div>
+                <!-- Channel Contribution Grid - Now only 2 items -->
+                <div class="split-grid-2" id="channel-kpi-row"></div>
+                
                 <div class="split-grid" style="margin-top: 24px;">
                      <div class="table-section" style="margin-bottom:0; padding:0;">
                          <div style="padding:15px; border-bottom:1px solid #333; font-weight:600; color:var(--color-gold);">TOP 5 BRANDS</div>
@@ -882,7 +991,7 @@
                 </div>
             </div>
 
-            <!-- PAGE 4: AFFILIATES -->
+            <!-- PAGE 4: AFFILIATES (HIDDEN IN MENU, BUT CODE EXISTS) -->
             <div id="affiliates" class="page-section">
                 <!-- Content same as before -->
                 <div class="ai-panel">
@@ -929,7 +1038,14 @@
                         <ul><li>LDB Division showing highest YoY Growth (+22%) due to CeraVe viral trends.</li></ul>
                     </div>
                 </div>
+                
+                <!-- NEW POSITION: DIVISION FILTER CARDS (FIRST) -->
+                <div class="division-grid" id="brand-division-cards" style="margin-bottom: 20px;"></div>
+
+                <!-- KPI ROW (SECOND - SECONDARY) -->
                 <div class="kpi-grid" id="brand-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
+
+                <!-- CHART -->
                 <div class="chart-section">
                     <div class="chart-header">
                         <div class="chart-controls">
@@ -951,7 +1067,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="division-grid" id="brand-division-cards"></div>
+
+                <!-- TABLE -->
                 <div class="table-section">
                     <div class="chart-title" style="margin-bottom:15px;">Brand Performance Matrix</div>
                     <table id="table-brands-main"><thead><tr><th>Brand</th><th>Division</th><th>Sessions</th><th>Hours</th><th>GMV</th><th>GMV/Hr</th><th>Orders</th><th>Growth</th></tr></thead><tbody></tbody></table>
@@ -1074,19 +1191,40 @@
         currentAffiliatePeriod: 'daily', currentAffiliateMetric: 'GMV',
         currentBrandPeriod: 'daily', currentBrandMetric: 'GMV',
         
+        selectedDivisions: ['CPD', 'LLD', 'PPD', 'LDB'], // Default all selected
+
         init: function() {
+            this.populateBrandFilter();
             this.generateAllData();
             this.renderDashboard();
             this.setupListeners();
         },
 
-        // NEW: Sidebar Toggle
+        populateBrandFilter: function() {
+            const select = document.getElementById('brandFilter');
+            select.innerHTML = '<option value="all">All Brands</option>'; 
+            for (const [division, brands] of Object.entries(Brands)) {
+                const group = document.createElement('optgroup');
+                group.label = division;
+                brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    group.appendChild(option);
+                });
+                select.appendChild(group);
+            }
+        },
+
         toggleSidebar: function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.querySelector('.sidebar-overlay');
-            
-            sidebar.classList.toggle('sidebar-open');
-            overlay.classList.toggle('active');
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle('desktop-hidden');
+            } else {
+                sidebar.classList.toggle('sidebar-open');
+                overlay.classList.toggle('active');
+            }
         },
 
         router: function(pageId, element) {
@@ -1097,9 +1235,11 @@
             
             this.activePage = pageId;
             
-            // Auto close sidebar on mobile when navigating
             if (window.innerWidth <= 768) {
-                this.toggleSidebar();
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.remove('active');
             }
 
             if(pageId === 'dashboard') {
@@ -1114,9 +1254,28 @@
         },
 
         generateAllData: function() {
+            // NEW: Detailed Brand Data for Aggregation
             this.data = {
-                dashboard: {
-                    kpis: [
+                brandsDetailed: []
+            };
+
+            // Generate detailed data for aggregation
+            Object.keys(Brands).forEach(div => {
+                Brands[div].forEach(brand => {
+                    this.data.brandsDetailed.push({
+                        name: brand,
+                        division: div,
+                        gmv: Math.floor(Math.random() * 500 + 100) * 10000000, 
+                        sessions: Math.floor(Math.random() * 20 + 5),
+                        hours: Math.floor(Math.random() * 50 + 10),
+                        orders: Math.floor(Math.random() * 2000 + 500),
+                        growth: Math.floor(Math.random() * 20) - 5
+                    });
+                });
+            });
+
+            this.data.dashboard = {
+                kpis: [
                         { label: 'GMV / Hour', val: 45000000, growth: 12.5, history: [30,32,35,33,38,40,45] },
                         { label: 'Total GMV', val: 12500000000, growth: 8.4, history: [80,85,82,90,95,100,108] },
                         { label: 'Total Orders', val: 45200, growth: -2.1, history: [50,48,49,47,46,45,45] },
@@ -1124,7 +1283,7 @@
                         { label: 'Total Views', val: 2400000, growth: 15.3, history: [10,12,15,18,20,22,24] },
                         { label: 'AOV', val: 276000, growth: 3.2, history: [25,25,26,26,27,27,27] }
                     ],
-                    engagementMetrics: [
+                engagementMetrics: [
                         { label: 'Impressions', val: '2.5M', growth: 5.4, history: [40,42,45,43,48,50,54] },
                         { label: 'Views', val: '1.2M', growth: 8.1, history: [20,22,25,24,28,30,35] },
                         { label: 'Viewers', val: '850K', growth: -2.3, history: [30,28,29,27,26,25,25] },
@@ -1139,38 +1298,37 @@
                         { label: 'Views > 1m', val: '450K', growth: 9.2, history: [20,25,30,35,40,42,45] },
                         { label: 'Order Rate', val: '1.8%', growth: 0.3, history: [1.5,1.6,1.6,1.7,1.7,1.8,1.8] }
                     ],
-                    channels: [
-                        { name: 'Livestream', gmv: 7500000000, share: 60, growth: 12, history: [45,48,50,55,58,60,65] },
-                        { name: 'Short Video', gmv: 3750000000, share: 30, growth: 8, history: [20,22,25,26,28,29,32] },
-                        { name: 'Affiliates', gmv: 1250000000, share: 10, growth: 25, history: [5,6,8,9,12,15,18] }
+                channels: [
+                        { name: 'Livestream', gmv: 7500000000, share: 67, growth: 12, history: [45,48,50,55,58,60,65] },
+                        { name: 'Short Video', gmv: 3750000000, share: 33, growth: 8, history: [20,22,25,26,28,29,32] }
                     ],
-                    topCreators: [
+                topCreators: [
                         { name: 'Tasya Farasya', gmv: 450000000 },
                         { name: 'Rachel Vennya', gmv: 320000000 },
                         { name: 'Dr. Richard Lee', gmv: 280000000 },
                         { name: 'Abel Cantika', gmv: 210000000 },
                         { name: 'Mami Louisse', gmv: 195000000 }
                     ],
-                    latestSessions: [
+                latestSessions: [
                         { time: '10 mins ago', host: 'Garnier Official', brand: 'Garnier', gmv: 12000000, gmvHr: 4500000, url: 'https://www.tiktok.com/@garnierindonesia' },
                         { time: '25 mins ago', host: 'Maybelline ID', brand: 'Maybelline', gmv: 24500000, gmvHr: 8200000, url: 'https://www.tiktok.com/@maybelline_indonesia' },
                         { time: '1 hour ago', host: 'L’Oréal Paris', brand: 'L’Oréal Paris', gmv: 56000000, gmvHr: 12500000, url: 'https://www.tiktok.com/@lorealparisid' },
                         { time: '2 hours ago', host: 'Tasya Farasya', brand: 'Luxe Mix', gmv: 185000000, gmvHr: 45000000, url: 'https://www.tiktok.com/@tasyafarasya' },
                         { time: '3 hours ago', host: 'Kérastase Pro', brand: 'Kérastase', gmv: 32000000, gmvHr: 9800000, url: 'https://www.tiktok.com/@lorealproid' }
                     ],
-                    livestreamHostData: [
+                livestreamHostData: [
                         { host: 'Tasya Farasya', sessions: 5, hours: 12, gmv: 2500000000, views: 150000, rpm: 450000, score: 9.8 },
                         { host: 'Mami Louisse', sessions: 8, hours: 24, gmv: 1800000000, views: 220000, rpm: 320000, score: 9.5 },
                         { host: 'Dr. Richard Lee', sessions: 4, hours: 10, gmv: 1500000000, views: 180000, rpm: 410000, score: 9.2 },
                         { host: 'Rachel Vennya', sessions: 3, hours: 8, gmv: 1200000000, views: 110000, rpm: 380000, score: 9.0 }
                     ],
-                    livestreamAllSessionsData: [
+                livestreamAllSessionsData: [
                         { date: '2024-01-28', time: '19:00', brand: 'L’Oréal Paris', host: 'Official Host', dur: '4h', gmv: 150000000, gmvhr: 37500000, views: 45000, imp: 120000, sold: 1200, comment: '2.5%' },
                         { date: '2024-01-27', time: '20:00', brand: 'Garnier', host: 'Guest Star', dur: '3h', gmv: 95000000, gmvhr: 31600000, views: 32000, imp: 98000, sold: 950, comment: '1.8%' },
                         { date: '2024-01-26', time: '15:00', brand: 'Maybelline', host: 'KOL A', dur: '2h', gmv: 45000000, gmvhr: 22500000, views: 18000, imp: 54000, sold: 420, comment: '1.5%' },
                         { date: '2024-01-25', time: '18:30', brand: 'Lancôme', host: 'Premium Host', dur: '5h', gmv: 450000000, gmvhr: 90000000, views: 25000, imp: 80000, sold: 550, comment: '3.2%' }
                     ],
-                    shortVideo: {
+                shortVideo: {
                         kpis: [
                             { label: 'GMV per Hour', val: 25000000, growth: 15.2, history: [18,20,22,21,23,24,25] },
                             { label: 'Video GMV', val: 3750000000, growth: 8.5, history: [40,42,41,43,44,45,46] },
@@ -1197,7 +1355,7 @@
                             ]
                         }
                     },
-                    affiliates: {
+                affiliates: {
                         kpis: [
                             { label: 'Affiliate GMV', val: 1250000000, growth: 25.0, history: [10,12,15,18,20,22,25] },
                             { label: 'Total Orders', val: 15600, growth: 18.5, history: [12,14,15,16,17,18,19] },
@@ -1206,16 +1364,7 @@
                             { label: 'Avg RPM', val: 28500, growth: -1.2, history: [30,29,29,28,28,28,28] }
                         ]
                     },
-                    brands: {
-                        kpis: [
-                            { label: 'Total Brand Count', val: 18, growth: 0, history: [18,18,18,18,18,18,18] },
-                            { label: 'Active Brands', val: 16, growth: 6.6, history: [14,15,15,15,16,16,16] },
-                            { label: 'Total Brand GMV', val: 12500000000, growth: 8.4, history: [80,85,82,90,95,100,108] },
-                            { label: 'Avg Session/Brand', val: 15, growth: 12.0, history: [10,11,12,13,14,14,15] },
-                            { label: 'Avg GMV/Brand', val: 694000000, growth: 7.5, history: [600,620,640,650,670,680,694] }
-                        ]
-                    },
-                    skus: {
+                skus: {
                         kpis: [
                             { label: 'Active SKUs', val: 1450, growth: 2.1, history: [1400,1410,1420,1430,1440,1445,1450] },
                             { label: 'Rotate Out Queue', val: 25, growth: -10.5, history: [30,28,28,27,26,25,25] },
@@ -1224,7 +1373,6 @@
                             { label: 'Average Margin', val: 65.4, growth: 1.2, history: [64,64,65,65,65,65,65], isPercent: true }
                         ]
                     }
-                }
             };
         },
 
@@ -1516,9 +1664,58 @@
              document.querySelector('#table-affiliates tbody').innerHTML = [{name: 'Tasya Farasya', plat: 'TikTok', gmv: 450, comm: 8},{name: 'Rachel Vennya', plat: 'Shopee', gmv: 320, comm: 7},{name: 'Dr. Richard Lee', plat: 'TikTok', gmv: 280, comm: 6}].map((c, i) => `<tr><td>${i+1}</td><td>${c.name}</td><td>${c.plat}</td><td>Rp ${c.gmv}M</td><td>${Math.floor(c.gmv*1000)}</td><td>${c.comm}%</td><td>150K</td><td class="growth-up">+5%</td></tr>`).join('');
         },
 
-        renderBrands: function() {
+        // TOGGLE BRAND FILTER FUNCTION
+        toggleBrandFilter: function(division) {
+            const index = this.selectedDivisions.indexOf(division);
+            if (index > -1) {
+                // If already selected, remove it (deselect)
+                this.selectedDivisions.splice(index, 1);
+            } else {
+                // If not selected, add it (select)
+                this.selectedDivisions.push(division);
+            }
+            
+            this.updateBrandDashboard();
+        },
+        
+        // NEW: AGGREGATE FUNCTION
+        updateBrandDashboard: function() {
+            // 1. FILTER DATA
+            let filteredBrands = [];
+            // If nothing selected, assume ALL
+            const divisionsToUse = this.selectedDivisions.length > 0 ? this.selectedDivisions : ['CPD', 'LLD', 'PPD', 'LDB'];
+
+            filteredBrands = this.data.brandsDetailed.filter(b => divisionsToUse.includes(b.division));
+
+            // 2. AGGREGATE KPI
+            let totalGMV = 0;
+            let totalSessions = 0;
+            let totalHours = 0;
+            let totalOrders = 0;
+            let brandCount = filteredBrands.length;
+
+            filteredBrands.forEach(b => {
+                totalGMV += b.gmv;
+                totalSessions += b.sessions;
+                totalHours += b.hours;
+                totalOrders += b.orders;
+            });
+
+            const avgGMV = brandCount > 0 ? totalGMV / brandCount : 0;
+            const avgSessions = brandCount > 0 ? totalSessions / brandCount : 0;
+            const gmvPerHour = totalHours > 0 ? totalGMV / totalHours : 0;
+
+            // 3. RENDER SECONDARY KPIs (Dynamic)
+            const kpiData = [
+                { label: 'Total Brand Count', val: brandCount, growth: 0 },
+                { label: 'Active Brands', val: Math.floor(brandCount * 0.9), growth: 5 }, // Fake logic
+                { label: 'Total Brand GMV', val: totalGMV, growth: 8 },
+                { label: 'Avg Session/Brand', val: Math.floor(avgSessions), growth: 12 },
+                { label: 'Avg GMV/Brand', val: avgGMV, growth: 7 }
+            ];
+
             const kpiContainer = document.getElementById('brand-kpi-row');
-            kpiContainer.innerHTML = this.data.dashboard.brands.kpis.map((k, i) => `
+            kpiContainer.innerHTML = kpiData.map((k, i) => `
                 <div class="card">
                     <div>
                         <div class="kpi-title">${k.label}</div>
@@ -1533,19 +1730,61 @@
                     </div>
                 </div>
             `).join('');
-            this.data.dashboard.brands.kpis.forEach((k, i) => renderSparkline(`spk-b-${i}`, k.history, k.growth >= 0));
-            this.setBrandPeriod('daily', true);
+            // Add dummy sparklines
+            kpiData.forEach((k, i) => renderSparkline(`spk-b-${i}`, [10,20,15,25,30,28,35], k.growth >= 0));
 
+            // 4. UPDATE CARDS UI (Selection State)
             const container = document.getElementById('brand-division-cards');
-            container.innerHTML = ['Consumer Products (CPD)', 'L’Oréal Luxe (LLD)', 'Professional (PPD)', 'Dermatological (LDB)'].map((name, i) => `
-                <div class="division-card">
-                    <div class="div-title">${name}</div>
-                    <div class="div-stat"><span>GMV</span> <span>Rp ${Math.floor(Math.random()*8+2)}B</span></div>
-                    <div class="div-stat"><span>Sessions</span> <span>${Math.floor(Math.random()*50+20)}</span></div>
-                    <div class="div-stat"><span>Growth</span> <span class="growth-up">+${Math.floor(Math.random()*12)}%</span></div>
+            // Re-rendering cards might be overkill if we just want to toggle class, but ensures consistency
+            const divisions = [
+                {code: 'CPD', name: 'Consumer Products (CPD)'},
+                {code: 'LLD', name: 'L’Oréal Luxe (LLD)'},
+                {code: 'PPD', name: 'Professional (PPD)'},
+                {code: 'LDB', name: 'Dermatological (LDB)'}
+            ];
+
+            container.innerHTML = divisions.map((div, i) => {
+                const isSelected = this.selectedDivisions.includes(div.code);
+                // Calculate Division Totals for Card Stats
+                const divBrands = this.data.brandsDetailed.filter(b => b.division === div.code);
+                let dGMV = 0, dSessions = 0, dHours = 0;
+                divBrands.forEach(b => { dGMV += b.gmv; dSessions += b.sessions; dHours += b.hours; });
+                
+                return `
+                <div class="division-card ${isSelected ? 'selected' : ''}" onclick="app.toggleBrandFilter('${div.code}')">
+                    <div class="card-checkbox"></div>
+                    <div class="div-title">${div.name}</div>
+                    <div class="div-stat"><span>GMV</span> <span class="div-metric-lg">${formatCurrency(dGMV)}</span></div>
+                    <div class="div-stat"><span>GMV/hr</span> <span>${formatCurrency(dHours > 0 ? dGMV/dHours : 0)}</span></div>
+                    <div class="div-stat"><span>Sessions</span> <span>${dSessions}</span></div>
+                    <div class="div-stat"><span>GMV Growth</span> <span class="growth-up">+12%</span></div>
                 </div>
+            `}).join('');
+
+            // 5. UPDATE TABLE
+            const tbody = document.querySelector('#table-brands-main tbody');
+            tbody.innerHTML = filteredBrands.map(b => `
+                <tr>
+                    <td>${b.name}</td>
+                    <td>${b.division}</td>
+                    <td>${b.sessions}</td>
+                    <td>${b.hours}</td>
+                    <td>${formatCurrency(b.gmv)}</td>
+                    <td>${formatCurrency(b.hours > 0 ? b.gmv/b.hours : 0)}</td>
+                    <td>${formatNumber(b.orders)}</td>
+                    <td class="${b.growth>0?'growth-up':'growth-down'}">${b.growth>0?'+':''}${b.growth}%</td>
+                </tr>
             `).join('');
-             document.querySelector('#table-brands-main tbody').innerHTML = Brands.CPD.concat(Brands.LLD).concat(Brands.LDB).map(b => `<tr><td>${b}</td><td>${Brands.CPD.includes(b)?'CPD':(Brands.LLD.includes(b)?'LLD':'LDB')}</td><td>${Math.floor(Math.random()*15)}</td><td>${Math.floor(Math.random()*40)}</td><td>Rp ${Math.floor(Math.random()*500)}M</td><td>Rp ${Math.floor(Math.random()*15)}M</td><td>${Math.floor(Math.random()*2000)}</td><td class="${Math.random()>0.3?'growth-up':'growth-down'}">${Math.random()>0.3?'+':'-'}${Math.floor(Math.random()*10)}%</td></tr>`).join('');
+
+            // 6. UPDATE CHART (Simulated)
+            // Just trigger a re-render with "different" random data to show interaction
+            this.setBrandPeriod(this.currentBrandPeriod, true);
+        },
+
+        renderBrands: function() {
+            // Initial render wrapper
+            this.updateBrandDashboard();
+            this.setBrandPeriod('daily', true);
         },
 
         renderSKUs: function() {
