@@ -401,6 +401,24 @@
             color: #000;
         }
 
+        /* NEW: SEARCH INPUT STYLE */
+        .search-input {
+            background-color: var(--color-bg-dark);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 12px;
+            width: 200px;
+            height: 30px; /* Match height of dropdowns */
+        }
+        .search-input:focus {
+            border-color: var(--color-gold);
+            color: var(--color-text-primary);
+            outline: none;
+        }
+
         /* PAGE CONTENT AREA */
         #content-area {
             flex: 1;
@@ -763,12 +781,12 @@
                     <div class="date-inputs-row">
                         <!-- Add calendar icon wrapper for persistent visibility -->
                         <div class="date-input-wrapper">
-                            <input type="text" id="startDateDisplay" class="custom-date-input" placeholder="Start Date" onfocus="app.switchToDateInput(this)" onblur="app.switchToTextInput(this)">
+                            <input type="text" id="startDateDisplay" class="custom-date-input search-input" placeholder="Start Date" onfocus="app.switchToDateInput(this)" onblur="app.switchToTextInput(this)">
                             <i class="fa-regular fa-calendar date-icon"></i>
                         </div>
                         <span style="color:#666">-</span>
                         <div class="date-input-wrapper">
-                            <input type="text" id="endDateDisplay" class="custom-date-input" placeholder="End Date" onfocus="app.switchToDateInput(this)" onblur="app.switchToTextInput(this)">
+                            <input type="text" id="endDateDisplay" class="custom-date-input search-input" placeholder="End Date" onfocus="app.switchToDateInput(this)" onblur="app.switchToTextInput(this)">
                             <i class="fa-regular fa-calendar date-icon"></i>
                         </div>
                     </div>
@@ -842,9 +860,6 @@
                 </div>
             </div>
             
-            <!-- Other pages content (Livestream, Short Video, etc.) kept same structure but omitted for brevity as focus is on header filter update -->
-            <!-- Note: Full content is preserved in JS logic below -->
-            
             <!-- PAGE 2: LIVESTREAM -->
             <div id="livestream" class="page-section">
                 <!-- Content same as before -->
@@ -881,7 +896,12 @@
                     <div id="live-tab-division" class="live-tab-content"><table id="table-live-division"><thead><tr><th>Division</th><th>Sessions</th><th>Hours</th><th>GMV</th><th>GMV/Hr</th><th>Growth</th></tr></thead><tbody></tbody></table></div>
                     <div id="live-tab-brand" class="live-tab-content hidden"><table id="table-live-brand"><thead><tr><th>Brand</th><th>Div</th><th>Sessions</th><th>Hours</th><th>GMV</th><th>GMV/Hr</th><th>Orders</th><th>Growth</th></tr></thead><tbody></tbody></table></div>
                     <div id="live-tab-host" class="live-tab-content hidden"><table id="table-live-host"><thead><tr><th>Host</th><th>Sessions</th><th>Hours</th><th>GMV</th><th>Views</th><th>RPM</th><th>Engage Score</th></tr></thead><tbody></tbody></table></div>
-                    <div id="live-tab-all" class="live-tab-content hidden"><table id="table-live-all"><thead><tr><th>Date</th><th>Brand</th><th>Host</th><th>Dur</th><th>GMV</th><th>GMV/Hr</th><th>Views</th><th>Comms</th></tr></thead><tbody></tbody></table></div>
+                    <div id="live-tab-all" class="live-tab-content hidden">
+                        <div style="padding:10px; display:flex; justify-content:flex-end;">
+                            <input type="text" placeholder="Search Session ID..." class="search-input">
+                        </div>
+                        <table id="table-live-all"><thead><tr><th>Date</th><th>Brand</th><th>Host</th><th>Dur</th><th>GMV</th><th>GMV/Hr</th><th>Views</th><th>Comms</th></tr></thead><tbody></tbody></table>
+                    </div>
                 </div>
             </div>
 
@@ -920,18 +940,7 @@
                 <div class="ai-panel"><div class="ai-title"><i class="fa-solid fa-robot"></i> AI Affiliate Insight</div><div class="ai-content"><ul><li>Top 10 Creators drive 60% of Affiliate GMV.</li></ul></div></div>
                 <div class="kpi-grid" id="affiliate-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
                 <div class="chart-section">
-                    <div class="chart-header">
-                        <div class="chart-controls">
-                            <button class="btn-gold active" onclick="app.updateAffiliateChart('GMV')">GMV Trend</button>
-                            <button class="btn-gold" onclick="app.updateAffiliateChart('ORDERS')">Orders Trend</button>
-                            <button class="btn-gold" onclick="app.updateAffiliateChart('RPM')">RPM Trend</button>
-                        </div>
-                        <div class="period-toggles">
-                            <button class="toggle-btn active" onclick="app.setAffiliatePeriod('daily')">Daily</button>
-                            <button class="toggle-btn" onclick="app.setAffiliatePeriod('weekly')">Weekly</button>
-                            <button class="toggle-btn" onclick="app.setAffiliatePeriod('monthly')">Monthly</button>
-                        </div>
-                    </div>
+                    <div class="chart-header"><div class="chart-controls"><button class="btn-gold active" onclick="app.updateAffiliateChart('GMV')">GMV Trend</button><button class="btn-gold" onclick="app.updateAffiliateChart('ORDERS')">Orders Trend</button><button class="btn-gold" onclick="app.updateAffiliateChart('RPM')">RPM Trend</button></div><div class="period-toggles"><button class="toggle-btn active" onclick="app.setAffiliatePeriod('daily')">Daily</button><button class="toggle-btn" onclick="app.setAffiliatePeriod('weekly')">Weekly</button><button class="toggle-btn" onclick="app.setAffiliatePeriod('monthly')">Monthly</button></div></div>
                     <div class="chart-container"><div class="chart-canvas-wrapper" id="affiliateChartWrapper"><canvas id="affiliateMainChart"></canvas></div></div>
                 </div>
                 <div class="table-section"><div class="chart-title"><span>Top Creator Performance</span><button class="btn-gold">Export CSV</button></div><table id="table-affiliates"><thead><tr><th>Rank</th><th>Creator</th><th>Platform</th><th>GMV</th><th>Orders</th><th>Comm %</th><th>RPM</th><th>Growth</th></tr></thead><tbody></tbody></table></div>
@@ -943,20 +952,7 @@
                 <div class="division-grid" id="brand-division-cards" style="margin-bottom: 20px;"></div>
                 <div class="kpi-grid" id="brand-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
                 <div class="chart-section">
-                    <div class="chart-header">
-                        <div class="chart-controls">
-                            <button class="btn-gold active" onclick="app.updateBrandChart('GMV')">GMV Trend</button>
-                            <button class="btn-gold" onclick="app.updateBrandChart('GMV_HOUR')">GMV/HR</button>
-                            <button class="btn-gold" onclick="app.updateBrandChart('ORDERS')">Orders</button>
-                            <button class="btn-gold" onclick="app.updateBrandChart('SESSIONS')">Sessions</button>
-                            <button class="btn-gold" onclick="app.updateBrandChart('HOURS')">Hours</button>
-                        </div>
-                        <div class="period-toggles">
-                            <button class="toggle-btn active" onclick="app.setBrandPeriod('daily')">Daily</button>
-                            <button class="toggle-btn" onclick="app.setBrandPeriod('weekly')">Weekly</button>
-                            <button class="toggle-btn" onclick="app.setBrandPeriod('monthly')">Monthly</button>
-                        </div>
-                    </div>
+                    <div class="chart-header"><div class="chart-controls"><button class="btn-gold active" onclick="app.updateBrandChart('GMV')">GMV Trend</button><button class="btn-gold" onclick="app.updateBrandChart('GMV_HOUR')">GMV/HR</button><button class="btn-gold" onclick="app.updateBrandChart('ORDERS')">Orders</button><button class="btn-gold" onclick="app.updateBrandChart('SESSIONS')">Sessions</button><button class="btn-gold" onclick="app.updateBrandChart('HOURS')">Hours</button></div><div class="period-toggles"><button class="toggle-btn active" onclick="app.setBrandPeriod('daily')">Daily</button><button class="toggle-btn" onclick="app.setBrandPeriod('weekly')">Weekly</button><button class="toggle-btn" onclick="app.setBrandPeriod('monthly')">Monthly</button></div></div>
                     <div class="chart-container"><div class="chart-canvas-wrapper" id="brandChartWrapper"><canvas id="brandMainChart"></canvas></div></div>
                 </div>
                 <div class="table-section"><div class="chart-title">Brand Performance Matrix</div><table id="table-brands-main"><thead><tr><th>Brand</th><th>Division</th><th>Sessions</th><th>Hours</th><th>GMV</th><th>GMV/Hr</th><th>Orders</th><th>Growth</th></tr></thead><tbody></tbody></table></div>
@@ -966,7 +962,13 @@
             <div id="skus" class="page-section">
                  <div class="ai-panel"><div class="ai-title"><i class="fa-solid fa-robot"></i> AI SKU Insight</div><div class="ai-content"><ul><li>3 SKUs in Garnier range are at risk of stock-out.</li></ul></div></div>
                 <div class="kpi-grid" id="sku-kpi-row" style="grid-template-columns: repeat(5, 1fr);"></div>
-                <div class="table-section"><div style="display:flex; justify-content:space-between;"><div class="chart-title">SKU Velocity & Stock</div><input type="text" placeholder="Search SKU..." style="width:200px;"></div><table id="table-skus"><thead><tr><th>SKU Code</th><th>Product</th><th>Brand</th><th>Price</th><th>Stock Days</th><th>Velocity</th><th>Trend</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+                <div class="table-section">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div class="chart-title">SKU Velocity & Stock</div>
+                        <input type="text" placeholder="Search SKU..." class="search-input">
+                    </div>
+                    <table id="table-skus"><thead><tr><th>SKU Code</th><th>Product</th><th>Brand</th><th>Price</th><th>Stock Days</th><th>Velocity</th><th>Trend</th><th>Action</th></tr></thead><tbody></tbody></table>
+                </div>
             </div>
 
         </div>
@@ -1071,21 +1073,33 @@
 
         // NEW: Input Type Switcher logic
         switchToDateInput: function(el) {
+            // Restore actual date value before switching type so browser recognizes it
+            if (el.dataset.realValue) {
+                el.value = el.dataset.realValue;
+            }
             el.type = 'date';
-            // Force open logic not strictly standard, but type switch allows browser picker
-            try { el.showPicker(); } catch(e) {}
+            
+            try {
+                el.showPicker();
+            } catch (e) {}
         },
         
         switchToTextInput: function(el) {
-            // When leaving, if value is set, format it to display text
-            const val = el.value; // YYYY-MM-DD
+            const val = el.value; // Current YYYY-MM-DD value from date picker
+            
+            // If there is a value from picker, update our stored real value
             if (val) {
-                el.type = 'text';
-                el.value = this.formatDateDisplay(val);
-                // Store the real YYYY-MM-DD value in a data attribute if needed for logic
                 el.dataset.realValue = val;
+            }
+            
+            // Switch back to text presentation
+            el.type = 'text';
+            
+            // Render the formatted text based on the stored real value (or keep empty if none)
+            if (el.dataset.realValue) {
+                el.value = this.formatDateDisplay(el.dataset.realValue);
             } else {
-                el.type = 'text'; // Revert to text if empty
+                el.value = '';
             }
         },
 
@@ -1121,16 +1135,22 @@
             let end = new Date();
             
             if (type === 'month') {
+                // First day of current month
                 start = new Date(year, month, 1);
-                end = new Date(year, month + 1, 0); // Last day of current month
+                // Last day of current month (day 0 of next month)
+                end = new Date(year, month + 1, 0); 
             } else if (type === 'quarter') {
                 const q = Math.floor(month / 3);
+                // First day of quarter
                 start = new Date(year, q * 3, 1);
-                end = new Date(year, (q * 3) + 3, 0); // Last day of the quarter
+                // Last day of quarter (day 0 of month after quarter end)
+                end = new Date(year, (q * 3) + 3, 0); 
             } else if (type === 'semester') {
                 const s = month < 6 ? 0 : 6;
+                // First day of semester
                 start = new Date(year, s, 1);
-                end = new Date(year, s + 6, 0); // Last day of semester
+                // Last day of semester (day 0 of month after semester end)
+                end = new Date(year, s + 6, 0); 
             } else if (type === 'year') {
                 start = new Date(year, 0, 1);
                 end = new Date(year, 11, 31); // Dec 31
@@ -1142,10 +1162,11 @@
             const startInput = document.getElementById('startDateDisplay');
             const endInput = document.getElementById('endDateDisplay');
             
-            startInput.value = startStr;
-            endInput.value = endStr;
+            // Set the REAL values in dataset directly
+            startInput.dataset.realValue = startStr;
+            endInput.dataset.realValue = endStr;
             
-            // Trigger visual update (switch to text with format)
+            // Trigger visual update (switch to text with format using stored real value)
             this.switchToTextInput(startInput);
             this.switchToTextInput(endInput);
             
